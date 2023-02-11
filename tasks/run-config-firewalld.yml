@@ -1,0 +1,36 @@
+---
+# tasks - run-config-firewalld.yml for nerve4-firewall
+
+- name: Firewalld - Permit traffic in default zone for the list of services
+  ansible.posix.firewalld:
+    service: "{{ item }}"
+    permanent: true
+    state: enabled
+  loop: "{{ rhel_enabled if rhel_enabled is iterable and rhel_enabled is not string else [] }}"
+
+- name: Firewalld - Do not permit traffic in default zone for the list of services
+  ansible.posix.firewalld:
+    service: "{{ item }}"
+    permanent: true
+    state: disabled
+  loop: "{{ rhel_disabled if rhel_disabled is iterable and rhel_disabled is not string else [] }}"
+
+- name: Firewalld - Permit traffic in default zone for the list of ports
+  ansible.posix.firewalld:
+    port: "{{ item }}"
+    permanent: true
+    state: enabled
+  loop: "{{ rhel_ports_enabled if rhel_ports_enabled is iterable and rhel_ports_enabled is not string else [] }}"
+
+- name: Firewalld - do not permit traffic in default zone for the list of ports
+  ansible.posix.firewalld:
+    port: "{{ item }}"
+    permanent: true
+    state: disabled
+  loop: "{{ rhel_ports_disabled if rhel_ports_disabled is iterable and rhel_ports_disabled is not string else [] }}"
+
+- name: Firewalld - Activate / Deactivate firewalld service
+  ansible.builtin.systemd:
+    name: "firewalld"
+    state: "{{ rhel_svc_state }}"
+    enabled: "{{ rhel_svc_enable }}"

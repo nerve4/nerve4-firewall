@@ -1,0 +1,22 @@
+---
+# tasks - main.yml for nerve4-firewall
+
+- include: rhel-install-firewalld.yml
+  when: 
+    (ansible_distribution == "CentOS") or
+    (ansible_distribution == "RedHat") or
+    (ansible_distribution in "Rocky")
+
+- include: ubuntu-install-ufw.yml
+  when: 
+    - ansible_distribution == "Ubuntu"
+
+- include: run-config-firewalld.yml
+  when: 
+    (ansible_distribution == "CentOS") or
+    (ansible_distribution == "RedHat") or
+    (ansible_distribution in "Rocky")
+
+- include: run-config-ufw.yml
+  when: 
+    - ansible_distribution == "Ubuntu"

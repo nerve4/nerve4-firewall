@@ -1,0 +1,51 @@
+---
+# tasks - run-config-ufw.yml for nerve4-firewall
+
+- name: ufw - Permit traffic for the list of services
+  community.general.ufw:
+    rule: allow
+    name: "{{ item }}"
+  loop: "{{ ubuntu_enabled if ubuntu_enabled is iterable and ubuntu_enabled is not string else [] }}"
+
+- name: ufw - Do Not permit traffic for the list of services
+  community.general.ufw:
+    rule: deny
+    name: "{{ item }}"
+  loop: "{{ ubuntu_disabled if ubuntu_disabled is iterable and ubuntu_disabled is not string else [] }}"
+
+- name: ufw - Permit tcp port range(s)
+  community.general.ufw:
+    rule: allow
+    port: "{{ item }}"
+    proto: tcp
+  loop: "{{ ubuntu_tcp_enabled if ubuntu_tcp_enabled is iterable and ubuntu_tcp_enabled is not string else [] }}"
+
+- name: ufw - Do not permit tcp port range(s)
+  community.general.ufw:
+    rule: deny
+    port: "{{ item }}"
+    proto: tcp
+  loop: "{{ ubuntu_tcp_disabled if ubuntu_tcp_disabled is iterable and ubuntu_tcp_disabled is not string else [] }}"
+
+- name: ufw - Permit tcp port range(s)
+  community.general.ufw:
+    rule: allow
+    port: "{{ item }}"
+    proto: udp
+  loop: "{{ ubuntu_udp_enabled if ubuntu_udp_enabled is iterable and ubuntu_udp_enabled is not string else [] }}"
+
+- name: ufw - Do not permit tcp port range(s)
+  community.general.ufw:
+    rule: deny
+    port: "{{ item }}"
+    proto: udp
+  loop: "{{ ubuntu_udp_disabled if ubuntu_udp_disabled is iterable and ubuntu_udp_disabled is not string else [] }}"
+
+- name: ufw - Activate / Deactivate UFW service
+  community.general.ufw:
+    state: "{{ ufw_svc_state }}"
+    policy: allow
+
+- name: ufw - Set logging
+  community.general.ufw:
+    logging: 'on'

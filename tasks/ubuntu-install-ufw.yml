@@ -1,0 +1,15 @@
+---
+# tasks - ubuntu-install-ufw.yml for nerve4-firewall
+
+- name: Install UFW on Ubuntu
+  ansible.builtin.apt: 
+    name: "{{ item }}"
+    state: present
+  loop: "{{ ubuntu_pkgs }}"
+
+- name: Upload default ufw file
+  become: yes
+  ansible.builtin.template:
+    src: ufw.j2
+    dest: "/etc/default/ufw"
+    mode: '0644'

@@ -1,0 +1,19 @@
+---
+# tasks - rhel-install-firewalld.yml for nerve4-firewall
+
+- name: Install firewalld on Rhel 7.x
+  ansible.builtin.yum:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ rhel_pkgs }}"
+  when:
+    - ansible_distribution_major_version == "7"
+
+- name: Install firewalld on Rhel 8.x / Rocky Linux
+  ansible.builtin.dnf:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ rhel_pkgs }}"
+  when:
+    (ansible_distribution_major_version == "8") or
+    (ansible_distribution in "Rocky")
